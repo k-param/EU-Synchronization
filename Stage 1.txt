@@ -1,6 +1,6 @@
 
 setwd("YOUR WORKING DIRECTORY")
-mf<-read.table("cycles.txt",header=TRUE)
+mf<-read.table("Extracted_Cycles.txt",header=TRUE)
 
 AUSTRIA	<-	mf$	AUSTRIA
 BELGIUM	<-	mf$	BELGIUM
