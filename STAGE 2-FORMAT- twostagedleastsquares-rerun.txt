@@ -1,0 +1,178 @@
+library(systemfit)
+library(texreg)
+library(stargazer)
+library(systemfit)
+library(texreg)
+setwd("C:/Users/Kany/Documents/Netherlands/Data")
+mf<-read.table("bilatagain-rerun.txt",header=TRUE)
+nini<-read.table("nini.txt",header=TRUE)
+mf$n<-c(1:377)
+mf<-merge(mf,nini, by=c("n"))
+mf$Sumgdp<-mf$YCOUNTRYI+mf$YCOUNTRYJ
+mf$multgdp<-mf$YCOUNTRYI*mf$YCOUNTRYJ
+mf$Diffgdp<-mf$YCOUNTRYI-mf$YCOUNTRYJ
+mf$multgdp<-log(mf$multgdp)
+#mf[mf$COUNT != "POLAND", ]
+Tradeint<-mf$TRADE*(226187565.6/1000000)/(mf$Sumgdp)
+Tradeint<-log(Tradeint)
+mf$Distance<-log(mf$Distance)
+mf$SECTOR<-log((mf$SECTOR*100)/11)   #*100)
+mf$Sumgdp<-log(mf$Sumgdp)
+mf$multgdp<-log(mf$multgdp)
+mf$Diffgdp<-abs(mf$Diffgdp)
+mf$Diffgdp<-log(mf$Diffgdp)
+mf$FDI<-mf$FDI_2000/1.37
+mf$FDI<-mf$FDI_2000+mf$FDI_2013
+mf$FDI<-abs(mf$FDI)
+mf$FDI<-log(mf$FDI)
+mf$FDI <- as.character(mf$FDI)
+mf$FDI[mf$FDI == "-Inf"] <- "0"
+mf$FDI<-as.numeric(mf$FDI)
+mf$cpi<-log(mf$cpi)
+mf$EPL<-log(mf$EPL)
+mf$EPL<-abs(mf$EPL)
+mf$PMR<-log(mf$PMR)
+mf$PMR<-abs(mf$PMR)
+mf$EPL<- as.character(mf$EPL)
+mf$EPL[mf$EPL == "Inf"] <- "0"
+mf$EPL<-as.numeric(mf$EPL)
+#mf$SUMSIZE<-log(mf$SUMSIZE)
+#mf$SUMSIZE<-abs(mf$SUMSIZE)
+#mf$inter<-mf$CURRENCY*mf$SUMSIZE
+mf$inter<-mf$latejoiner*mf$SUMSIZE*mf$CURRENCY
+###########################################################################
+
+###########RENAMING VARIABLES SO THAT RESULTS TABLE ARE NICER!#############
+Cycle<-mf$UCM
+Sector<-mf$SECTOR
+FDI<-mf$FDI
+BorderShared<-mf$BORDER
+EPL<-mf$EPL
+PMR<-mf$PMR
+CPI<-mf$cpi
+Sumgdp<-mf$Sumgdp
+Currency<-mf$inter
+BankShared<-mf$CROSSBORDER
+Diffgdp<-mf$Diffgdp
+Distance<-mf$Distance
+Multgdp<-mf$multgdp
+#############################################################################
+
+##############Estimation#####################################################
+cycle<-Cycle~Tradeint+Sector+FDI     
+trade<-Tradeint~Sector+FDI+Distance+Currency+BorderShared+CPI
+sector<-Sector~FDI+Diffgdp+Multgdp 
+financial<-FDI~BankShared+Sumgdp                         
+inst<-~Tradeint+FDI+Sector+Sumgdp+Diffgdp+Currency+CPI+Distance+BorderShared+BankShared+Multgdp
+system<-list(Cycle=cycle,Trade=trade,Sector=sector,Financial=financial)
+fit2sls <- systemfit(system, "2SLS",inst=inst, data = mf)
+fit3sls <- systemfit(system, "3SLS",inst=inst, data = mf)
+fitsur <- systemfit(system, "SUR", data = mf) 
+
+cycle<-Cycle~Tradeint+Sector   
+trade<-Tradeint~Sector +Distance+Currency+BorderShared
+sector<-Sector~Diffgdp+Multgdp
+inst<-~Sector+Diffgdp+Currency+CPI+Distance+BorderShared+mf$multgdp
+system<-list(Cycle=cycle,Trade=trade,Sector=sector)
+mfit2sls <- systemfit(system, "2SLS",inst=inst, data = mf)
+mfit3sls <- systemfit(system, "3SLS",inst=inst, data = mf)
+mfitsur <- systemfit(system, "SUR", data = mf)
+
+cycle<-Cycle~Tradeint+Sector+FDI
+trade<-Tradeint~Sector+FDI+Distance+Currency+BorderShared+EPL+PMR
+sector<-Sector~FDI+Diffgdp+Multgdp
+financial<-FDI~BankShared+Sumgdp    
+inst<-~FDI+Sector+Sumgdp+Diffgdp+Currency+CPI+Distance+BorderShared+BankShared+Multgdp+PMR+EPL
+system<-list(Cycle=cycle,Trade=trade,Sector=sector,Financial=financial)
+nfit2sls <- systemfit(system, "2SLS",inst=inst, data = mf) 
+nfit3sls <- systemfit(system, "3SLS",inst=inst, data = mf) 
+nfitsur <- systemfit(system, "SUR", data = mf)
+
+texreg(list(mfit2sls,mfit3sls,mfitsur,nfit2sls,nfit3sls,nfitsur))
+######################tests#######################################################################
+
+a<-AIC(mfit2sls)
+b<-AIC(mfit3sls)
+c<-AIC(mfitsur)
+d<-AIC(fit2sls)
+e<-AIC(fit3sls)
+f<-AIC(fitsur)
+g<-AIC(nfit2sls)
+h<-AIC(nfit3sls)
+i<-AIC(nfitsur)
+i2<-cbind(a,b,c,d,e,f,g,h,i)
+stargazer(i2)
+
+j<-logLik(mfit2sls)
+k<-logLik(mfit3sls)
+l<-logLik(mfitsur)
+m<-logLik(fit2sls)
+n<-logLik(fit3sls)
+o<-logLik(fitsur)
+p<-logLik(nfit2sls)
+q<-logLik(nfit3sls)
+r<-logLik(nfitsur)
+r2<-cbind(j,k,l,m,n,o,p,q,r)
+stargazer(r2)
+
+######################Hodrick-Prescott#########################
+
+##############Estimation#####################################################
+cycle<-HPOX~Tradeint+Sector+FDI     
+trade<-Tradeint~Sector+FDI+Distance+Currency+BorderShared+CPI
+sector<-Sector~FDI+Diffgdp+Multgdp 
+financial<-FDI~BankShared+Sumgdp                         
+inst<-~Tradeint+FDI+Sector+Sumgdp+Diffgdp+Currency+CPI+Distance+BorderShared+BankShared+Multgdp
+system<-list(Cycle=cycle,Trade=trade,Sector=sector,Financial=financial)
+fit2sls <- systemfit(system, "2SLS",inst=inst, data = mf)
+fit3sls <- systemfit(system, "3SLS",inst=inst, data = mf)
+fitsur <- systemfit(system, "SUR", data = mf) 
+
+cycle<-HPOX~Tradeint+Sector   
+trade<-Tradeint~Sector +Distance+Currency+BorderShared
+sector<-Sector~Diffgdp+Multgdp
+inst<-~Sector+Diffgdp+Currency+CPI+Distance+BorderShared+mf$multgdp
+system<-list(Cycle=cycle,Trade=trade,Sector=sector)
+mfit2sls <- systemfit(system, "2SLS",inst=inst, data = mf)
+mfit3sls <- systemfit(system, "3SLS",inst=inst, data = mf)
+mfitsur <- systemfit(system, "SUR", data = mf)
+
+cycle<-HPOX~Tradeint+Sector+FDI
+trade<-Tradeint~Sector+FDI+Distance+Currency+BorderShared+EPL+PMR
+sector<-Sector~FDI+Diffgdp+Multgdp
+financial<-FDI~BankShared+Sumgdp    
+inst<-~FDI+Sector+Sumgdp+Diffgdp+Currency+CPI+Distance+BorderShared+BankShared+Multgdp+PMR+EPL
+system<-list(Cycle=cycle,Trade=trade,Sector=sector,Financial=financial)
+nfit2sls <- systemfit(system, "2SLS",inst=inst, data = mf) 
+nfit3sls <- systemfit(system, "3SLS",inst=inst, data = mf) 
+nfitsur <- systemfit(system, "SUR", data = mf)
+
+texreg(list(mfit2sls,mfit3sls,mfitsur,nfit2sls,nfit3sls,nfitsur))
+################################################################################
+
+
+######################tests#######################################################################
+
+a<-AIC(mfit2sls)
+b<-AIC(mfit3sls)
+c<-AIC(mfitsur)
+d<-AIC(fit2sls)
+e<-AIC(fit3sls)
+f<-AIC(fitsur)
+g<-AIC(nfit2sls)
+h<-AIC(nfit3sls)
+i<-AIC(nfitsur)
+i2<-cbind(a,b,c,d,e,f,g,h,i)
+stargazer(i2)
+
+j<-logLik(mfit2sls)
+k<-logLik(mfit3sls)
+l<-logLik(mfitsur)
+m<-logLik(fit2sls)
+n<-logLik(fit3sls)
+o<-logLik(fitsur)
+p<-logLik(nfit2sls)
+q<-logLik(nfit3sls)
+r<-logLik(nfitsur)
+r2<-cbind(j,k,l,m,n,o,p,q,r)
+stargazer(r2)
