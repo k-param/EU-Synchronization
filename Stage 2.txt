@@ -1,8 +1,10 @@
+install.packages("systemfit")
+install.packages("texreg")
+install.packages("stargazer")
+
 library(systemfit)
 library(texreg)
 library(stargazer)
-library(systemfit)
-library(texreg)
 setwd("YOUR WORKING DIRECTORY")
 mf<-read.table("Dyadic_dataset-rerun.txt",header=TRUE)
 nini<-read.table("nini.txt",header=TRUE)
