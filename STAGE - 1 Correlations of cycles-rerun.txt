@@ -1,5 +1,5 @@
 
-setwd("C:/Users/Kany/Documents/Netherlands/October paper 2 rerun")
+setwd(SET YOUR WORKING DIRECTORY HERE)
 mf<-read.table("cycles.txt",header=TRUE)
 
 AUSTRIA	<-	mf$	AUSTRIA
@@ -806,4 +806,4 @@ nini<-c(BIBI,CICI)
 nini<-unlist(nini)
 nini<-as.numeric(nini)
 
-write.table(nini, "C:/Users/Kany/Documents/Netherlands/October paper 2 rerun/nini", sep="\t")																																																																																															
+write.table(nini, "SET YOUR WORKING DIRECTORY HERE", sep="\t")																																																																																															
