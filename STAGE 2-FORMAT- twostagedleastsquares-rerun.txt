@@ -3,11 +3,13 @@ library(texreg)
 library(stargazer)
 library(systemfit)
 library(texreg)
-setwd("C:/Users/Kany/Documents/Netherlands/Data")
+setwd("Set own working directory")
 mf<-read.table("bilatagain-rerun.txt",header=TRUE)
 nini<-read.table("nini.txt",header=TRUE)
 mf$n<-c(1:377)
 mf<-merge(mf,nini, by=c("n"))
+mf$UCM<-NULL
+mf$UCM<-mf$nini
 mf$Sumgdp<-mf$YCOUNTRYI+mf$YCOUNTRYJ
 mf$multgdp<-mf$YCOUNTRYI*mf$YCOUNTRYJ
 mf$Diffgdp<-mf$YCOUNTRYI-mf$YCOUNTRYJ
