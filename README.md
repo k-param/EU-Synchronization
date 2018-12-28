@@ -1,4 +1,4 @@
-# EUsynchronisation
+# EU-Synchronization
 
 These files are the necessary files to replicate the results for the working paper "Investigating the effect of Trade on Business Cycle Synchronization: An Applied Case to the EU."
 
