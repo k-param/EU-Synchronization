@@ -15,3 +15,6 @@ Stage 1.txt
 Stage 2.txt
 
 Put the two data files in to your chosen working directory and then run stage one and two of the code subsequently.
+
+These codes are written to br run in r.
+
