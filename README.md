@@ -6,7 +6,7 @@ There are two data files called: 'bilatagain-rerun.txt' and 'cycles-rerun.txt'
 
 There are two codes for r called:
 
-STAGE - 1 Correlations of cycles-rerun.txt
+Stage 1.txt
 
 STAGE 2-FORMAT- twostagedleastsquares-rerun.txt
 
