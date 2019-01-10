@@ -803,7 +803,7 @@ CICI<-as.numeric(CICI)
 
 
 cycle<-data.frame(matrix(ncol=0,nrow=377))
-n<-c(1:377)T
+n<-c(1:377)
 didi<-c(BIBI,CICI)
 didi<-unlist(didi)
 didi<-as.numeric(didi)
@@ -811,5 +811,5 @@ didi<-as.numeric(didi)
 cycle$n<-n
 cycle$cycle<-didi
 
-write.table(cycle, file = "nini.txt", sep = "\t",
+write.table(cycle, file = "cycle.txt", sep = "\t",
             row.names = TRUE, col.names = NA)
