@@ -7,12 +7,12 @@ library(texreg)
 library(stargazer)
 setwd("YOUR WORKING DIRECTORY")
 mf<-read.table("Dyadic_dataset-rerun.txt",header=TRUE)
-nini<-read.table("nini.txt",header=TRUE)
+cycle<-read.table("cycle.txt",header=TRUE)
 mf$n<-c(1:377)
-mf<-merge(mf,nini, by=c("n"))
+mf<-merge(mf,cycle, by=c("n"))
 mf$UCM<-NULL
 
-mf$UCM<-mf$nini
+mf$UCM<-mf$cycle
 mf$Sumgdp<-mf$YCOUNTRYI+mf$YCOUNTRYJ
 mf$multgdp<-mf$YCOUNTRYI*mf$YCOUNTRYJ
 mf$Diffgdp<-mf$YCOUNTRYI-mf$YCOUNTRYJ
