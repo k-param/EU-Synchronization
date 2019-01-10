@@ -47,7 +47,7 @@ mf$EPL<-as.numeric(mf$EPL)
 mf$inter<-mf$latejoiner*mf$SUMSIZE*mf$CURRENCY
 ###########################################################################
 
-###########RENAMING VARIABLES SO THAT RESULTS TABLE ARE NICER!#############
+###########RENAMING VARIABLES#############
 Cycle<-mf$UCM
 Sector<-mf$SECTOR
 FDI<-mf$FDI
