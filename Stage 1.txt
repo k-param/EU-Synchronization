@@ -802,14 +802,14 @@ CICI<-unlist(CICI)
 CICI<-as.numeric(CICI)
 
 
-nini<-data.frame(matrix(ncol=0,nrow=377))
+cycle<-data.frame(matrix(ncol=0,nrow=377))
 n<-c(1:377)T
 didi<-c(BIBI,CICI)
 didi<-unlist(didi)
 didi<-as.numeric(didi)
 
-nini$n<-n
-nini$nini<-didi
+cycle$n<-n
+cycle$cycle<-didi
 
-write.table(nini, file = "nini.txt", sep = "\t",
+write.table(cycle, file = "nini.txt", sep = "\t",
             row.names = TRUE, col.names = NA)
